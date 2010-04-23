@@ -27,6 +27,7 @@
 
 char *base64_encodei PARAMS((char *in));
 void usage PARAMS((void));
+void get_env_cmdline(int *pargc, char **argv);
 int sock_connect PARAMS((const char *hname, int port));
 int main PARAMS((int argc, char *argv[]));
 
@@ -131,6 +132,24 @@ void usage ()
 	printf("usage: corkscrew <proxyhost> <proxyport> <desthost> <destport> [authfile]\n");
 }
 
+/*
+ * So we can pass the cmdline using a env var
+ */
+void get_env_cmdline(int *pargc, char **argv)
+{
+    if (*pargc == 1) {
+        char *cmdline;
+        int c=1;
+        cmdline = getenv("CMDLINE");
+        cmdline = strtok(cmdline," ");
+        while(cmdline) {
+            if(cmdline) argv[c++]=cmdline;
+            cmdline = strtok('\0', " ");
+        }
+        *pargc=c;
+    }
+}
+
 #ifdef ANSI_FUNC
 int sock_connect (const char *hname, int port)
 #else
@@ -183,6 +202,11 @@ char *argv[];
 	FILE *fp;
 
 	port = 80;
+
+        /*
+        * in case you want to pass the cmdline as a env var
+        */
+        get_env_cmdline(&argc, argv);
 
 	if ((argc == 5) || (argc == 6)) {
 		if (argc == 5) {
