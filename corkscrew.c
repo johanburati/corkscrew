@@ -55,7 +55,7 @@ char *in;
 	char *buf, *ret;
 
 	unsigned int tmp;
-	
+
 	int i,len;
 
 	len = strlen(in);
@@ -154,7 +154,7 @@ int port;
 		memcpy(&addr.sin_addr, hent->h_addr, hent->h_length);
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
-	
+
 	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)))
 		return -1;
 
